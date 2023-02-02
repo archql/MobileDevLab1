@@ -53,15 +53,6 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        // logics setup here
-        binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
-            }
-        });
-
         // setup fab
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
