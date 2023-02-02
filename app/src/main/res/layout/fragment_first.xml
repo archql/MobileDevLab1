@@ -12,13 +12,22 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <SearchView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:iconifiedByDefault="false"
-                android:queryHint="type some words from a note">
+                android:layout_marginHorizontal="8sp"
+                android:layout_marginVertical="15sp"
+                app:cardCornerRadius="5sp">
 
-            </SearchView>
+                <SearchView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5sp"
+                    android:iconifiedByDefault="false"
+                    android:queryHint="Search note">
+
+                </SearchView>
+            </androidx.cardview.widget.CardView>
 
             <View
                 android:id="@+id/divider"
@@ -29,8 +38,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerNotes"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#EAEAEA" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
