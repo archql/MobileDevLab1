@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:padding="5sp"
             android:paddingStart="20sp"
-            android:text="JAN, 19" />
+            android:text="@{note.getDateString()}" />
 
     </LinearLayout>
 </layout>

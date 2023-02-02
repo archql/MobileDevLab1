@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Note implements Serializable {
     protected LocalDateTime dateCreated;
@@ -35,6 +36,16 @@ public class Note implements Serializable {
     public void displayTo(TextView textView)
     {
         textView.setText(text);
+    }
+
+    private final DateTimeFormatter fmt1 = DateTimeFormatter.ofPattern("dd MMM");
+    private final DateTimeFormatter fmt2 = DateTimeFormatter.ofPattern("dd MMM yyyy");
+    public String getDateString() {
+        if (dateEdited.getYear() == LocalDateTime.now().getYear()) {
+            return dateEdited.format(fmt1);
+        } else {
+            return dateEdited.format(fmt2);
+        }
     }
 
 

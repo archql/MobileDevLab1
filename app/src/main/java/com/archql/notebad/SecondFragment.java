@@ -34,17 +34,24 @@ public class SecondFragment extends Fragment {
         // setup data model
         viewModel = new ViewModelProvider(requireActivity()).get(NoteViewModel.class);
         viewModel.getSelectedNote().observe(getViewLifecycleOwner(), item -> {
-            // save current note for further editing
-            currentNote = item;
-            // TODO
-            binding.textviewSecond.setText(currentNote.text);
+            binding.setNote(item);
         });
 
-        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
+        binding.btBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // send new note to edit
+                viewModel.setSelectedNote(binding.getNote());
+                // go back
                 NavHostFragment.findNavController(SecondFragment.this)
                         .navigate(R.id.action_SecondFragment_to_FirstFragment);
+            }
+        });
+
+        binding.btDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }
