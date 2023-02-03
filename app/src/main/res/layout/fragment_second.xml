@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="note"
-            type="com.archql.notebad.Note" />
+            type="com.archql.notebad.StoredNote" />
+        <variable
+            name="btStorageSwitchState"
+            type="Boolean"
+            />
     </data>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -16,6 +20,18 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/btStorageSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@null"
+                android:src="@drawable/ic_storage"
+                android:tint="@{btStorageSwitchState ? @color/purple_500 : @color/purple_200}"
+                app:layout_constraintEnd_toStartOf="@+id/btDelete"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/btBack"
@@ -36,6 +52,17 @@
                 android:layout_marginEnd="16dp"
                 android:background="@android:color/background_light"
                 android:src="@drawable/ic_done"
+                app:layout_constraintEnd_toStartOf="@+id/btStorageSwitch"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@null"
+                android:src="@drawable/ic_delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,7 +80,7 @@
             android:inputType="textPersonName"
             android:padding="10sp"
             android:textSize="24sp"
-            android:text="@{note.header}"/>
+            android:text="@={note.stored.header}"/>
 
         <TextView
             android:id="@+id/txtDateEdited"
@@ -62,7 +89,7 @@
             android:layout_marginHorizontal="10sp"
             android:layout_marginBottom="5sp"
             android:paddingHorizontal="10sp"
-            android:text="@{note.getDateString()}" />
+            android:text="@{note.stored.getDateString()}" />
 
         <View
             android:id="@+id/divider2"
@@ -82,7 +109,7 @@
             android:inputType="textPersonName"
             android:lines="10"
             android:padding="10sp"
-            android:text="@{note.text}"/>
+            android:text="@={note.stored.text}"/>
 
     </LinearLayout>
 </layout>

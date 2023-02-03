@@ -1,19 +1,24 @@
 package com.archql.notebad;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Note implements Serializable {
-    protected LocalDateTime dateCreated;
-    protected LocalDateTime dateEdited;
-
     protected String header;
     protected String text;
+
+    protected LocalDateTime dateCreated;
+    protected LocalDateTime dateEdited;
 
     protected boolean encrypted;
 
@@ -27,19 +32,13 @@ public class Note implements Serializable {
         encrypted = false;
         dateCreated = LocalDateTime.now();
         dateEdited = LocalDateTime.now();
+
+        this.header = "";
+        this.text = "";
     }
 
-    public void edit(int from, int to, String replacement)
-    {
-        dateEdited = LocalDateTime.now();
-    }
-    public void displayTo(TextView textView)
-    {
-        textView.setText(text);
-    }
-
-    private final DateTimeFormatter fmt1 = DateTimeFormatter.ofPattern("dd MMM");
-    private final DateTimeFormatter fmt2 = DateTimeFormatter.ofPattern("dd MMM yyyy");
+    private static final DateTimeFormatter fmt1 = DateTimeFormatter.ofPattern("dd MMM");
+    private static final DateTimeFormatter fmt2 = DateTimeFormatter.ofPattern("dd MMM yyyy");
     public String getDateString() {
         if (dateEdited.getYear() == LocalDateTime.now().getYear()) {
             return dateEdited.format(fmt1);

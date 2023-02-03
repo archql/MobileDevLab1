@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     // is used to access layout's variables and views
     private ActivityMainBinding binding;
+    private NoteViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,22 @@ public class MainActivity extends AppCompatActivity {
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        // set view model
+        viewModel = new ViewModelProvider(this).get(NoteViewModel.class);
+        viewModel.setLocalStorage(new LocalCRUDStorage(getApplicationContext()));
+        viewModel.setSQLiteStorage(new SQLiteCRUDStorage(getApplicationContext(), "note"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // free opened sql db
+        SQLiteCRUDStorage st = viewModel.getSQLiteStorage().getValue();
+        if (st != null) {
+            st.close();
+        }
     }
 
     @Override

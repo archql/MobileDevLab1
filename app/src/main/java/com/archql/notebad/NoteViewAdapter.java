@@ -15,22 +15,28 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     // interface for handling item clicks
     public interface OnNoteClickListener{
-        void onNoteClick(Note n);
+        void onNoteClick(StoredNote n);
     }
 
     private Context ctx;
-    private List<Note> notes;
+    private List<StoredNote> notes;
     private OnNoteClickListener noteClickListener;
 
-    public NoteViewAdapter(Context ctx, List<Note> notes, OnNoteClickListener clickListener) {
+    public NoteViewAdapter(Context ctx, List<StoredNote> notes, OnNoteClickListener clickListener) {
         this.ctx = ctx;
         this.notes = notes;
         this.noteClickListener = clickListener;
     }
 
-    public void addNote(Note n) {
+    public void addNote(StoredNote n) {
         notes.add(n);
         notifyItemInserted(notes.size() - 1);
+    }
+    public void updateNote(StoredNote n) {
+        int index = notes.indexOf(n);
+        if (index != -1) {
+            notifyItemChanged(index);
+        }
     }
 
     @NonNull
@@ -42,7 +48,7 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        Note n = notes.get(position);
+        StoredNote n = notes.get(position);
         holder.bind(n);
         holder.binding.setNoteClickListener(noteClickListener);
     }

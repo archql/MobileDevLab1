@@ -4,7 +4,7 @@
     <data>
         <variable
             name="note"
-            type="com.archql.notebad.Note" />
+            type="com.archql.notebad.StoredNote" />
         <variable
             name="noteClickListener"
             type="com.archql.notebad.NoteViewAdapter.OnNoteClickListener" />
@@ -24,7 +24,7 @@
             android:layout_margin="2sp"
             android:paddingStart="20sp"
             android:paddingEnd="20sp"
-            android:text="@{note.header}"
+            android:text="@{note.stored.header}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -48,7 +48,7 @@
                 android:maxLines="3"
                 android:padding="5sp"
                 android:requiresFadingEdge="horizontal|vertical"
-                android:text="@{note.text}"
+                android:text="@{note.stored.text}"
                 android:textColor="?android:attr/textColorPrimary" />
         </androidx.cardview.widget.CardView>
 
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:padding="5sp"
             android:paddingStart="20sp"
-            android:text="@{note.getDateString()}" />
+            android:text="@{note.stored.getDateString()}" />
 
     </LinearLayout>
 </layout>

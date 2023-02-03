@@ -18,14 +18,14 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
         binding = noteViewBinding;
     }
 
-    public void bind(Note n) {
+    public void bind(StoredNote n) {
         //binding.setVariable(BR.note, n);
         binding.setNote(n);
         binding.executePendingBindings();
     }
 
-    public void noteClicked(Note n) {
-        Toast.makeText(binding.getRoot().getContext(), "You clicked " + n.text,
+    public void noteClicked(StoredNote n) {
+        Toast.makeText(binding.getRoot().getContext(), "You clicked " + n.getStored().text,
                 Toast.LENGTH_LONG).show();
     }
 }

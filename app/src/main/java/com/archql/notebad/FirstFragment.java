@@ -22,6 +22,8 @@ public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private NoteViewAdapter adapter;
     private NoteViewModel viewModel;
+    private LocalCRUDStorage localStorage;
+    private SQLiteCRUDStorage sqliteStorage;
 
     @Override
     public View onCreateView(
@@ -34,17 +36,13 @@ public class FirstFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        // Called every time fragment is swapped
         // setup data model
         viewModel = new ViewModelProvider(requireActivity()).get(NoteViewModel.class);
-        viewModel.getSelectedNote().observe(getViewLifecycleOwner(), item -> {
-            // Perform some actions
-        });
-
         // create adapter
         adapter = new NoteViewAdapter(getContext(), new ArrayList<>(), new NoteViewAdapter.OnNoteClickListener() {
             @Override
-            public void onNoteClick(Note n) {
+            public void onNoteClick(StoredNote n) {
                 // send new note to edit
                 viewModel.setSelectedNote(n);
                 // navigate to edit note page + selected note
@@ -53,12 +51,36 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        // Load all notes from local storage
+        localStorage = viewModel.getLocalStorage().getValue();
+        if (localStorage != null) {
+            List<StoredNote> notesFromLS = localStorage.ReadAll();
+            for (StoredNote o : notesFromLS) {
+                adapter.addNote(o);
+            }
+        }
+        // Load all notes from sqlite
+        sqliteStorage = viewModel.getSQLiteStorage().getValue();
+        if (sqliteStorage != null) {
+            List<StoredNote> notesFromSQLite = sqliteStorage.ReadAll();
+            for (StoredNote o : notesFromSQLite) {
+                adapter.addNote(o);
+            }
+        }
+
+        // do not need live updates
+        //viewModel.getSelectedNote().observe(getViewLifecycleOwner(), item -> {
+        //    // Perform some actions
+        //    adapter.updateNote(item);
+        //});
+        adapter.updateNote(viewModel.getSelectedNote().getValue());
+
         // setup fab
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // send new note to edit
-                Note n = new Note();
+                StoredNote n = new StoredNote();
                 adapter.addNote(n);
                 viewModel.setSelectedNote(n);
                 // navigate to edit note page + newly created note
@@ -67,10 +89,6 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        // TODO
-        adapter.addNote(new Note("My first note", "blah blah"));
-        adapter.addNote(new Note("My second note", "blah blah blah"));
-        adapter.addNote(new Note("My third note", "blah blah blah b"));
         // set recycler
         binding.recyclerNotes.setLayoutManager(new LinearLayoutManager(this.getContext()));
         binding.recyclerNotes.setAdapter(adapter);
