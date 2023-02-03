@@ -2,6 +2,7 @@ package com.archql.notebad;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SQLiteCRUDStorage implements ICRUDStorage<Note, StoredNote> {
@@ -22,7 +23,7 @@ public class SQLiteCRUDStorage implements ICRUDStorage<Note, StoredNote> {
     public boolean Create(StoredNote obj) {
         boolean success = true;
         try {
-            sqliteStorage.insert(obj);
+            obj.id = sqliteStorage.insert(obj); // update our id
         } catch (Exception e) {
             e.printStackTrace();
             success = false;
@@ -37,7 +38,7 @@ public class SQLiteCRUDStorage implements ICRUDStorage<Note, StoredNote> {
 
     @Override
     public List<StoredNote> ReadAll() {
-        List<StoredNote> result = null;
+        List<StoredNote> result = new ArrayList<>();
         try {
             result = sqliteStorage.fetch();
         } catch (Exception e) {
@@ -63,6 +64,18 @@ public class SQLiteCRUDStorage implements ICRUDStorage<Note, StoredNote> {
         boolean success = true;
         try {
             sqliteStorage.delete(obj.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            success = false;
+        }
+        return success;
+    }
+
+    @Override
+    public boolean Delete(long _id) {
+        boolean success = true;
+        try {
+            sqliteStorage.delete(_id);
         } catch (Exception e) {
             e.printStackTrace();
             success = false;

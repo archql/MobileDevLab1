@@ -88,7 +88,7 @@ public class LocalStorage<T extends Serializable> {
 
     public boolean deleteFile(String filename) {
         try {
-            File f = new File(ctx.getFilesDir(), filename);           //file to be delete
+            File f = new File(ctx.getFilesDir(), filename);           //file to be deleted
             return f.delete();
         } catch (Exception e) {
             e.printStackTrace();

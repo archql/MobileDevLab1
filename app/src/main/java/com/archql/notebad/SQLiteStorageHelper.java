@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SQLiteStorageHelper extends SQLiteOpenHelper {
 
     // database version
-    static final int DB_VERSION = 2;
+    static final int DB_VERSION = 3;
 
     private final String createTable;
     private final String dropTable;

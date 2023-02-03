@@ -8,4 +8,5 @@ public interface ICRUDStorage<T, Storable extends IStorable<T>> {
     List<Storable> ReadAll();
     boolean Update(Storable newObj);
     boolean Delete(Storable obj);
+    boolean Delete(long _id);
 }

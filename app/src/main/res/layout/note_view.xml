@@ -18,6 +18,12 @@
         android:onClick="@{() -> noteClickListener.onNoteClick(note)}">
 
         <TextView
+            android:id="@+id/txtId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(note.id)}"/>
+
+        <TextView
             android:id="@+id/txtNoteHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -25,6 +25,7 @@ public class SQLiteStorage<T extends SQLitePlaceable> {
 
     public SQLiteStorage(Context context, String storedObjectName, String[] columns, Supplier<T> supplier) {
         this.context = context;
+        this.supplier = supplier;
 
         storedObjectName = storedObjectName.toLowerCase();
         dbName = storedObjectName + ".db";
@@ -32,7 +33,7 @@ public class SQLiteStorage<T extends SQLitePlaceable> {
         tableId = storedObjectName + "_id";
 
         this.columns = new String[columns.length + 1];
-        this.columns[0] = tableName;
+        this.columns[0] = tableId;
         System.arraycopy(columns, 0, this.columns, 1, columns.length);
     }
 
@@ -46,8 +47,8 @@ public class SQLiteStorage<T extends SQLitePlaceable> {
         helper.close();
     }
 
-    public void insert(T o) {
-        database.insert(tableName, null, ((SQLitePlaceable)o).generateContentValue());
+    public long insert(T o) {
+        return database.insert(tableName, null, o.generateContentValue());
     }
     public List<T> fetch() {
         Cursor cursor = database.query(tableName, columns, null, null, null, null, null);

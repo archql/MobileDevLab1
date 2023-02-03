@@ -88,6 +88,10 @@ public class Note implements Serializable {
     public void setEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
     }
+
+    public void edited() {
+        dateEdited = LocalDateTime.now();
+    }
 /*
     TextView textView = (TextView) findViewById(R.id.mytextview01);
     Spannable word = new SpannableString("Your message");

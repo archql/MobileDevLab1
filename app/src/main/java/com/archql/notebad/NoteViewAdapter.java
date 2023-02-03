@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.archql.notebad.databinding.NoteViewBinding;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewHolder> {
@@ -30,6 +31,13 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     public void addNote(StoredNote n) {
         notes.add(n);
+        // TODO more eff
+        notes.sort(new Comparator<StoredNote>() {
+            @Override
+            public int compare(StoredNote o1, StoredNote o2) {
+                return o1.getStored().getDateCreated().compareTo(o2.getStored().getDateCreated());
+            }
+        });
         notifyItemInserted(notes.size() - 1);
     }
     public void updateNote(StoredNote n) {

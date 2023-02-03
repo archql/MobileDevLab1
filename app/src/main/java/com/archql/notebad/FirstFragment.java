@@ -22,8 +22,6 @@ public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private NoteViewAdapter adapter;
     private NoteViewModel viewModel;
-    private LocalCRUDStorage localStorage;
-    private SQLiteCRUDStorage sqliteStorage;
 
     @Override
     public View onCreateView(
@@ -52,21 +50,19 @@ public class FirstFragment extends Fragment {
         });
 
         // Load all notes from local storage
-        localStorage = viewModel.getLocalStorage().getValue();
-        if (localStorage != null) {
+        viewModel.getLocalStorage().observe(getViewLifecycleOwner(), localStorage -> {
             List<StoredNote> notesFromLS = localStorage.ReadAll();
             for (StoredNote o : notesFromLS) {
                 adapter.addNote(o);
             }
-        }
+        });
         // Load all notes from sqlite
-        sqliteStorage = viewModel.getSQLiteStorage().getValue();
-        if (sqliteStorage != null) {
-            List<StoredNote> notesFromSQLite = sqliteStorage.ReadAll();
-            for (StoredNote o : notesFromSQLite) {
+        viewModel.getSQLiteStorage().observe(getViewLifecycleOwner(), sqliteStorage -> {
+            List<StoredNote> notesFromLS = sqliteStorage.ReadAll();
+            for (StoredNote o : notesFromLS) {
                 adapter.addNote(o);
             }
-        }
+        });
 
         // do not need live updates
         //viewModel.getSelectedNote().observe(getViewLifecycleOwner(), item -> {

@@ -6,10 +6,7 @@
         <variable
             name="note"
             type="com.archql.notebad.StoredNote" />
-        <variable
-            name="btStorageSwitchState"
-            type="Boolean"
-            />
+        <import type="com.archql.notebad.STORAGE_TYPE" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,6 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!-- TODO BAD!!! -->
+
             <ImageButton
                 android:id="@+id/btStorageSwitch"
                 android:layout_width="wrap_content"
@@ -29,7 +28,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@null"
                 android:src="@drawable/ic_storage"
-                android:tint="@{btStorageSwitchState ? @color/purple_500 : @color/purple_200}"
+                android:tint="@{note.storageType == STORAGE_TYPE.NO_STORAGE ? @color/black : (note.storageType == STORAGE_TYPE.LOCAL ? @color/purple_500 : @color/teal_700)}"
                 app:layout_constraintEnd_toStartOf="@+id/btDelete"
                 app:layout_constraintTop_toTopOf="parent" />
 
