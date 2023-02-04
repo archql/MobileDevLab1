@@ -1,23 +1,29 @@
 package com.archql.notebad;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.SortedList;
 
 import com.archql.notebad.databinding.FragmentFirstBinding;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
+import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
 public class FirstFragment extends Fragment {
 
@@ -44,11 +50,12 @@ public class FirstFragment extends Fragment {
         adapter = new NoteViewAdapter(getContext(), new NoteViewAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(StoredNote n) {
-                // send new note to edit
-                viewModel.setSelectedNote(n);
-                // navigate to edit note page + selected note
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                // check if selected note is encrypted
+                if (n.getStored().isEncrypted()) {
+                    checkBiometrics(n);
+                } else {
+                    navigateToNote(n);
+                }
             }
         });
 
@@ -119,5 +126,56 @@ public class FirstFragment extends Fragment {
             }
         }
         return filteredModelList;
+    }
+
+    private void navigateToNote(StoredNote n) {
+        // send new note to edit
+        viewModel.setSelectedNote(n);
+        // navigate to edit note page + selected note
+        NavHostFragment.findNavController(FirstFragment.this)
+                .navigate(R.id.action_FirstFragment_to_SecondFragment);
+    }
+
+    public static boolean checkBiometricsAccess(Context ctx) {
+        BiometricManager biometricManager = BiometricManager.from(ctx);
+        return biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)
+                == BiometricManager.BIOMETRIC_SUCCESS;
+    }
+
+    private void checkBiometrics(StoredNote n) {
+
+        if (!checkBiometricsAccess(getContext())) {
+            Toast.makeText(getContext(), "Auth is impossible on this device!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Auth")
+                .setSubtitle("Log in to see note's content")
+                .setAllowedAuthenticators(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)
+                .build();
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt(getActivity(), ContextCompat.getMainExecutor(getContext()),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                        Toast.makeText(getContext(), "Auth error!", Toast.LENGTH_LONG).show();
+                        super.onAuthenticationError(errorCode, errString);
+                    }
+
+                    @Override
+                    public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                        Toast.makeText(getContext(), "Auth OK", Toast.LENGTH_LONG).show();
+                        navigateToNote(n);
+                        super.onAuthenticationSucceeded(result);
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        Toast.makeText(getContext(), "Auth failed!", Toast.LENGTH_LONG).show();
+                        super.onAuthenticationFailed();
+                    }
+                });
+        biometricPrompt.authenticate(promptInfo);
     }
 }

@@ -18,6 +18,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15sp"
                 android:layout_marginTop="15sp"
+                android:fontFamily="@font/andika_bold"
                 android:text="My Notes"
                 android:textAlignment="center"
                 android:textColor="?android:attr/textColorPrimary"

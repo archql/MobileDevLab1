@@ -16,9 +16,6 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.archql.notebad.databinding.FragmentSecondBinding;
 
-import java.io.Console;
-import java.util.List;
-
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
@@ -90,6 +87,24 @@ public class SecondFragment extends Fragment {
                     storage.Delete(note);
                 }
                 goBack();
+            }
+        });
+
+        binding.btLockSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!FirstFragment.checkBiometricsAccess(getContext())) {
+                    Toast.makeText(getContext(), "Auth is impossible on this device!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                StoredNote note = binding.getNote(); // TODO null check
+                if (note.getStored().isEncrypted()) {
+                    note.getStored().setEncrypted(false);
+                } else {
+                    note.getStored().setEncrypted(true);
+                }
+                binding.invalidateAll(); // TODO find better
             }
         });
     }

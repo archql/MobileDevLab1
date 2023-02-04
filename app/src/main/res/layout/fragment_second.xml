@@ -21,15 +21,26 @@
             <!-- TODO BAD!!! -->
 
             <ImageButton
+                android:id="@+id/btLockSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@null"
+                android:src="@{note.stored.encrypted ? @drawable/ic_lock : @drawable/ic_baseline_lock_open_24}"
+                app:layout_constraintEnd_toStartOf="@+id/btDelete"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
                 android:id="@+id/btStorageSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
-                android:src="@drawable/ic_storage"
-                android:tint="@{note.storageType == STORAGE_TYPE.NO_STORAGE ? @color/black : (note.storageType == STORAGE_TYPE.LOCAL ? @color/purple_500 : @color/teal_700)}"
-                app:layout_constraintEnd_toStartOf="@+id/btDelete"
+                android:src="@{note.storageType == STORAGE_TYPE.NO_STORAGE ? @drawable/ic_storage_no : (note.storageType == STORAGE_TYPE.LOCAL ? @drawable/ic_storage : @drawable/ic_storage_sql)}"
+                android:tint="@{note.storageType == STORAGE_TYPE.NO_STORAGE ? @color/red : (note.storageType == STORAGE_TYPE.LOCAL ? @color/green : @color/orange)}"
+                app:layout_constraintEnd_toStartOf="@+id/btLockSwitch"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
@@ -38,8 +49,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:background="@android:color/background_light"
+                android:background="@null"
                 android:src="@drawable/ic_back"
+                android:tint="@color/teal_700"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,13 +61,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@android:color/background_light"
+                android:background="@null"
                 android:src="@drawable/ic_done"
                 app:layout_constraintEnd_toStartOf="@+id/btStorageSwitch"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/btDelete"
+                style="@style/Widget.AppCompat.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -76,6 +89,7 @@
             android:background="@null"
             android:ems="10"
             android:hint="Note title"
+            android:fontFamily="@font/andika_bold"
             android:inputType="textPersonName"
             android:padding="10sp"
             android:textSize="24sp"
@@ -103,6 +117,7 @@
             android:layout_margin="10sp"
             android:background="@null"
             android:ems="10"
+            android:fontFamily="@font/andika_regular"
             android:gravity="start"
             android:hint="Note content"
             android:inputType="textMultiLine|text|textCapSentences|textImeMultiLine"

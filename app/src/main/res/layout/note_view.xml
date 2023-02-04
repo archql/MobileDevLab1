@@ -2,6 +2,9 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
+        <import type="com.archql.notebad.R"/>
+        <import type="android.view.View"/>
+        <import type="androidx.core.content.ContextCompat"/>
         <variable
             name="note"
             type="com.archql.notebad.StoredNote" />
@@ -17,17 +20,20 @@
         android:orientation="vertical"
         android:onClick="@{() -> noteClickListener.onNoteClick(note)}">
 
+        <!--
         <TextView
             android:id="@+id/txtId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{String.valueOf(note.id)}"/>
+        -->
 
         <TextView
             android:id="@+id/txtNoteHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2sp"
+            android:fontFamily="@font/andika_bold"
             android:paddingStart="20sp"
             android:paddingEnd="20sp"
             android:text="@{note.stored.header}"
@@ -35,10 +41,12 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <!-- app:cardBackgroundColor="@{note.stored.encrypted ? ContextCompat.getColor(context, R.attr.colorSecondary)  : ContextCompat.getColor(context, R.attr.colorPrimary)}" -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="5sp"
+            android:backgroundTintMode="add"
             app:cardCornerRadius="5dp">
 
             <TextView
@@ -46,22 +54,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2sp"
-                android:background="@color/white"
                 android:ellipsize="marquee"
                 android:fadingEdge="horizontal|vertical"
                 android:fadingEdgeLength="50sp"
+                android:fontFamily="@font/andika_regular"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:maxLines="3"
                 android:padding="5sp"
                 android:requiresFadingEdge="horizontal|vertical"
                 android:text="@{note.stored.text}"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="?android:attr/textColorPrimary"
+                android:visibility="@{note.stored.encrypted ? View.GONE : View.VISIBLE}" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5sp"
+                android:tint="@color/orange"
+                android:visibility="@{note.stored.encrypted ? View.VISIBLE : View.GONE}"
+                app:srcCompat="@drawable/ic_lock" />
         </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/txtNoteDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/andika_italic"
             android:padding="5sp"
             android:paddingStart="20sp"
             android:text="@{note.stored.getDateString()}" />

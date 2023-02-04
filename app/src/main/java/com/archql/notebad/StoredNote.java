@@ -44,7 +44,7 @@ public class StoredNote implements IStorable<Note>, SQLitePlaceable {
         contentValue.put("text", stored.text);
         contentValue.put("dateCreated", stored.dateCreated.toString());
         contentValue.put("dateEdited", stored.dateEdited.toString());
-        contentValue.put("encrypted", stored.encrypted);
+        contentValue.put("encrypted", Boolean.toString(stored.encrypted));
 
         return contentValue;
     }
