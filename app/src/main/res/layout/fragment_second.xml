@@ -105,10 +105,10 @@
             android:ems="10"
             android:gravity="start"
             android:hint="Note content"
-            android:inputType="textPersonName"
+            android:inputType="textMultiLine|text|textCapSentences|textImeMultiLine"
             android:lines="10"
             android:padding="10sp"
-            android:text="@={note.stored.text}"/>
+            android:text="@={note.stored.text}" />
 
     </LinearLayout>
 </layout>

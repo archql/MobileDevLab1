@@ -1,5 +1,6 @@
 package com.archql.notebad;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -55,28 +57,18 @@ public class SecondFragment extends Fragment {
                 // send new note to edit
                 //viewModel.setSelectedNote(binding.getNote());
                 // TODO null check
-                StoredNote n = binding.getNote();
-                if (n.getStored().text.equals("")) {
-                    Toast.makeText(getActivity(), "Note is empty, so nothing is saved!", Toast.LENGTH_LONG ).show();
+                if (binding.getNote().isChanged()) {
+                    doSaveDialog();
                 } else {
-                    if (save()) {
-                        Toast.makeText(getActivity(), "Note is saved successfully :)", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getActivity(), "Note save failed :/", Toast.LENGTH_LONG).show();
-                    }
+                    goBack();
                 }
-                goBack();
             }
         });
 
         binding.btDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (save()) {
-                    Toast.makeText(getActivity(), "Note is saved successfully :)", Toast.LENGTH_LONG ).show();
-                } else {
-                    Toast.makeText(getActivity(), "Note save failed :/", Toast.LENGTH_LONG ).show();
-                }
+                doSave();
             }
         });
 
@@ -108,6 +100,42 @@ public class SecondFragment extends Fragment {
         binding = null;
     }
 
+    private void doSaveDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setTitle("Alert");
+        alertDialogBuilder.setMessage("You did not saved your changes");
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        doSave();
+                        goBack();
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Ignore", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        goBack();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
+    private void doSave() {
+        StoredNote sn = binding.getNote();
+        if (sn.isChanged()) {
+            if (sn.getStored().header.equals("")) {
+                Toast.makeText(getActivity(), "Note is empty, so nothing is saved!", Toast.LENGTH_LONG).show();
+            } else {
+                sn.edited(); // TODO
+                if (save()) {
+                    Toast.makeText(getActivity(), "Note is saved successfully :)", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Note save failed :/", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
     private boolean save() {
         // TODO null check
         StoredNote note = binding.getNote();
@@ -135,7 +163,6 @@ public class SecondFragment extends Fragment {
             note.lastStorageType = note.storageType;
         } else {
             // if already existent note
-            note.getStored().edited();
             result = storage.Update(note);
             Log.e("TAG", "Update: " + result);
         }
