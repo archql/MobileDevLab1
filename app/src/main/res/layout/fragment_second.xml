@@ -123,6 +123,8 @@
             android:inputType="textMultiLine|text|textCapSentences|textImeMultiLine"
             android:lines="10"
             android:padding="10sp"
+            android:scrollHorizontally="false"
+            android:singleLine="false"
             android:text="@={note.stored.text}" />
 
     </LinearLayout>

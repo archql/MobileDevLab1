@@ -121,7 +121,7 @@ public class FirstFragment extends Fragment {
         final List<StoredNote> filteredModelList = new ArrayList<>();
         for (StoredNote model : models) {
             final String text = model.getStored().getText().toLowerCase();
-            if (text.contains(lowerCaseQuery)) {
+            if (!model.getStored().isEncrypted() && text.contains(lowerCaseQuery)) {
                 filteredModelList.add(model);
             }
         }
