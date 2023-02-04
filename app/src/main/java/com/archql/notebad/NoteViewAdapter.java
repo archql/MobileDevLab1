@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SortedList;
 
 import com.archql.notebad.databinding.NoteViewBinding;
 
@@ -20,49 +21,101 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     }
 
     private Context ctx;
-    private List<StoredNote> notes;
     private OnNoteClickListener noteClickListener;
 
-    public NoteViewAdapter(Context ctx, List<StoredNote> notes, OnNoteClickListener clickListener) {
+    public NoteViewAdapter(Context ctx, OnNoteClickListener clickListener) {
         this.ctx = ctx;
-        this.notes = notes;
         this.noteClickListener = clickListener;
     }
 
-    public void addNote(StoredNote n) {
-        notes.add(n);
-        // TODO more eff
-        notes.sort(new Comparator<StoredNote>() {
-            @Override
-            public int compare(StoredNote o1, StoredNote o2) {
-                return o1.getStored().getDateCreated().compareTo(o2.getStored().getDateCreated());
-            }
-        });
-        notifyItemInserted(notes.size() - 1);
+    public void add(StoredNote model) {
+        sortedList.add(model);
     }
-    public void updateNote(StoredNote n) {
-        int index = notes.indexOf(n);
-        if (index != -1) {
-            notifyItemChanged(index);
+
+    public void remove(StoredNote model) {
+        sortedList.remove(model);
+    }
+
+    public void add(List<StoredNote> models) {
+        sortedList.addAll(models);
+    }
+
+    public void remove(List<StoredNote> models) {
+        sortedList.beginBatchedUpdates();
+        for (StoredNote model : models) {
+            sortedList.remove(model);
         }
+        sortedList.endBatchedUpdates();
+    }
+
+    public void replaceAll(List<StoredNote> models) {
+        sortedList.beginBatchedUpdates();
+        for (int i = sortedList.size() - 1; i >= 0; i--) {
+            final StoredNote model = sortedList.get(i);
+            if (!models.contains(model)) {
+                sortedList.remove(model);
+            }
+        }
+        sortedList.addAll(models);
+        sortedList.endBatchedUpdates();
     }
 
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        NoteViewBinding binding = NoteViewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        final NoteViewBinding binding = NoteViewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new NoteViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        StoredNote n = notes.get(position);
+        final StoredNote n = sortedList.get(position);
         holder.bind(n);
         holder.binding.setNoteClickListener(noteClickListener);
     }
 
     @Override
     public int getItemCount() {
-        return notes.size();
+        return sortedList.size();
     }
+
+    // search
+    private final SortedList<StoredNote> sortedList = new SortedList<>(StoredNote.class, new SortedList.Callback<StoredNote>() {
+
+        @Override
+        public void onInserted(int position, int count) {
+            notifyItemRangeInserted(position, count);
+        }
+
+        @Override
+        public void onRemoved(int position, int count) {
+            notifyItemRangeRemoved(position, count);
+        }
+
+        @Override
+        public void onMoved(int fromPosition, int toPosition) {
+            notifyItemMoved(fromPosition, toPosition);
+        }
+
+        @Override
+        public void onChanged(int position, int count) {
+            notifyItemRangeChanged(position, count);
+        }
+
+        @Override
+        public int compare(StoredNote a, StoredNote b) {
+            // TODO replace with comparator
+            return a.getStored().getDateCreated().compareTo(b.getStored().getDateCreated()); //mComparator.compare(a, b);
+        }
+
+        @Override
+        public boolean areContentsTheSame(StoredNote oldItem, StoredNote newItem) {
+            return oldItem.equals(newItem); // TODO
+        }
+
+        @Override
+        public boolean areItemsTheSame(StoredNote item1, StoredNote item2) {
+            return item1.getId() == item2.getId();
+        }
+    });
 }

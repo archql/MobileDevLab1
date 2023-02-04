@@ -6,6 +6,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class StoredNote implements IStorable<Note>, SQLitePlaceable {
 
@@ -83,8 +84,23 @@ public class StoredNote implements IStorable<Note>, SQLitePlaceable {
     public STORAGE_TYPE getStorageType() {
         return storageType;
     }
-
     public void setStorageType(STORAGE_TYPE newType) {
         this.storageType = newType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StoredNote that = (StoredNote) o;
+        return id == that.id &&
+                stored.equals(that.stored) &&
+                storageType == that.storageType &&
+                lastStorageType == that.lastStorageType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stored, id, storageType, lastStorageType);
     }
 }

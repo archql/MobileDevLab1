@@ -14,6 +14,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Note implements Serializable {
+
+    private static final long serialVersionUID = 6529685098267757690L;
+
     protected String header;
     protected String text;
 
@@ -35,6 +38,10 @@ public class Note implements Serializable {
 
         this.header = "";
         this.text = "";
+    }
+
+    public void edited() {
+        dateEdited = LocalDateTime.now();
     }
 
     private static final DateTimeFormatter fmt1 = DateTimeFormatter.ofPattern("dd MMM");
@@ -89,10 +96,24 @@ public class Note implements Serializable {
         this.encrypted = encrypted;
     }
 
-    public void edited() {
-        dateEdited = LocalDateTime.now();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Note note = (Note) o;
+        return encrypted == note.encrypted &&
+                header.equals(note.header) &&
+                text.equals(note.text) &&
+                dateCreated.equals(note.dateCreated) &&
+                dateEdited.equals(note.dateEdited);
     }
-/*
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(header, text, dateCreated, dateEdited, encrypted);
+    }
+
+    /*
     TextView textView = (TextView) findViewById(R.id.mytextview01);
     Spannable word = new SpannableString("Your message");
 

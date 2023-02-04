@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.SortedList;
 
 import com.archql.notebad.databinding.FragmentFirstBinding;
 import com.google.android.material.snackbar.Snackbar;
@@ -22,6 +24,7 @@ public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private NoteViewAdapter adapter;
     private NoteViewModel viewModel;
+    private List<StoredNote> notes;
 
     @Override
     public View onCreateView(
@@ -38,7 +41,7 @@ public class FirstFragment extends Fragment {
         // setup data model
         viewModel = new ViewModelProvider(requireActivity()).get(NoteViewModel.class);
         // create adapter
-        adapter = new NoteViewAdapter(getContext(), new ArrayList<>(), new NoteViewAdapter.OnNoteClickListener() {
+        adapter = new NoteViewAdapter(getContext(), new NoteViewAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(StoredNote n) {
                 // send new note to edit
@@ -49,27 +52,19 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        notes = new ArrayList<>();
         // Load all notes from local storage
         viewModel.getLocalStorage().observe(getViewLifecycleOwner(), localStorage -> {
-            List<StoredNote> notesFromLS = localStorage.ReadAll();
-            for (StoredNote o : notesFromLS) {
-                adapter.addNote(o);
-            }
+            List<StoredNote> loaded = localStorage.ReadAll();
+            notes.addAll(loaded);
+            adapter.add(loaded);
         });
         // Load all notes from sqlite
         viewModel.getSQLiteStorage().observe(getViewLifecycleOwner(), sqliteStorage -> {
-            List<StoredNote> notesFromLS = sqliteStorage.ReadAll();
-            for (StoredNote o : notesFromLS) {
-                adapter.addNote(o);
-            }
+            List<StoredNote> loaded = sqliteStorage.ReadAll();
+            notes.addAll(loaded);
+            adapter.add(loaded);
         });
-
-        // do not need live updates
-        //viewModel.getSelectedNote().observe(getViewLifecycleOwner(), item -> {
-        //    // Perform some actions
-        //    adapter.updateNote(item);
-        //});
-        adapter.updateNote(viewModel.getSelectedNote().getValue());
 
         // setup fab
         binding.fab.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +72,7 @@ public class FirstFragment extends Fragment {
             public void onClick(View view) {
                 // send new note to edit
                 StoredNote n = new StoredNote();
-                adapter.addNote(n);
+                adapter.add(n);
                 viewModel.setSelectedNote(n);
                 // navigate to edit note page + newly created note
                 NavHostFragment.findNavController(FirstFragment.this)
@@ -88,6 +83,23 @@ public class FirstFragment extends Fragment {
         // set recycler
         binding.recyclerNotes.setLayoutManager(new LinearLayoutManager(this.getContext()));
         binding.recyclerNotes.setAdapter(adapter);
+
+        // setup search
+        binding.srchNote.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Filter logics here
+                final List<StoredNote> filteredNotesList = filter(notes, newText);
+                adapter.replaceAll(filteredNotesList);
+                binding.recyclerNotes.scrollToPosition(0);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -96,4 +108,16 @@ public class FirstFragment extends Fragment {
         binding = null;
     }
 
+    private static List<StoredNote> filter(List<StoredNote> models, String query) {
+        final String lowerCaseQuery = query.toLowerCase();
+
+        final List<StoredNote> filteredModelList = new ArrayList<>();
+        for (StoredNote model : models) {
+            final String text = model.getStored().getText().toLowerCase();
+            if (text.contains(lowerCaseQuery)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
+    }
 }
