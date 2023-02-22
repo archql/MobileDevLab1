@@ -1,8 +1,12 @@
-package com.archql.notebad;
+package com.archql.notebad.ui.helpers;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.archql.notebad.entities.StoredNote;
+import com.archql.notebad.storage.LocalCRUDStorage;
+import com.archql.notebad.storage.SQLiteCRUDStorage;
 
 public class NoteViewModel extends ViewModel {
     // MutableLiveData allows its value to be changed

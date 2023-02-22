@@ -1,4 +1,4 @@
-package com.archql.notebad;
+package com.archql.notebad.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.archql.notebad.ui.helpers.NoteViewAdapter;
+import com.archql.notebad.ui.helpers.NoteViewModel;
+import com.archql.notebad.R;
+import com.archql.notebad.entities.StoredNote;
 import com.archql.notebad.databinding.FragmentFirstBinding;
 
 import java.util.ArrayList;
@@ -119,10 +123,14 @@ public class FirstFragment extends Fragment {
         final String lowerCaseQuery = query.toLowerCase();
 
         final List<StoredNote> filteredModelList = new ArrayList<>();
-        for (StoredNote model : models) {
-            final String text = model.getStored().getText().toLowerCase();
-            if (!model.getStored().isEncrypted() && text.contains(lowerCaseQuery)) {
-                filteredModelList.add(model);
+        if (lowerCaseQuery.equals("")) {
+            filteredModelList.addAll(models);
+        } else {
+            for (StoredNote model : models) {
+                final String text = model.getStored().getText().toLowerCase();
+                if (!model.getStored().isEncrypted() && text.contains(lowerCaseQuery)) {
+                    filteredModelList.add(model);
+                }
             }
         }
         return filteredModelList;

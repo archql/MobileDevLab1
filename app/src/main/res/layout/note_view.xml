@@ -7,10 +7,10 @@
         <import type="androidx.core.content.ContextCompat"/>
         <variable
             name="note"
-            type="com.archql.notebad.StoredNote" />
+            type="com.archql.notebad.entities.StoredNote" />
         <variable
             name="noteClickListener"
-            type="com.archql.notebad.NoteViewAdapter.OnNoteClickListener" />
+            type="com.archql.notebad.ui.helpers.NoteViewAdapter.OnNoteClickListener" />
     </data>
 
     <LinearLayout
@@ -54,11 +54,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2sp"
-                android:ellipsize="marquee"
-                android:fadingEdge="horizontal|vertical"
+                android:ellipsize="end"
+                android:fadingEdge="vertical"
                 android:fadingEdgeLength="50sp"
                 android:fontFamily="@font/andika_regular"
-                android:marqueeRepeatLimit="marquee_forever"
                 android:maxLines="3"
                 android:padding="5sp"
                 android:requiresFadingEdge="horizontal|vertical"

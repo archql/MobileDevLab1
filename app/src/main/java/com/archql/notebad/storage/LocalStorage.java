@@ -1,4 +1,4 @@
-package com.archql.notebad;
+package com.archql.notebad.storage;
 
 import android.content.Context;
 
@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LocalStorage<T extends Serializable> {
@@ -29,6 +26,9 @@ public class LocalStorage<T extends Serializable> {
 
     public boolean writeToFile(String filename, T s)
     {
+        if (s == null) {
+            return false;
+        }
         //File file = new File(ctx.getFilesDir(), filename + );
         try (FileOutputStream fos = ctx.openFileOutput(filename, Context.MODE_PRIVATE)) {
             ObjectOutputStream objectOut = new ObjectOutputStream(fos);
@@ -38,6 +38,8 @@ public class LocalStorage<T extends Serializable> {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

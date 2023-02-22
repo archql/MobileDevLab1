@@ -1,9 +1,14 @@
-package com.archql.notebad;
+package com.archql.notebad.entities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+
+import com.archql.notebad.storage.ICRUDStorage;
+import com.archql.notebad.storage.IStorable;
+import com.archql.notebad.storage.SQLitePlaceable;
+import com.archql.notebad.storage.STORAGE_TYPE;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -73,6 +78,11 @@ public class StoredNote implements IStorable<Note>, SQLitePlaceable {
     }
 
     @Override
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Override
     public Note getStored() {
         return stored;
     }
@@ -118,8 +128,14 @@ public class StoredNote implements IStorable<Note>, SQLitePlaceable {
     public STORAGE_TYPE getStorageType() {
         return storageType;
     }
+    public STORAGE_TYPE getLastStorageType() {
+        return lastStorageType;
+    }
     public void setStorageType(STORAGE_TYPE newType) {
         this.storageType = newType;
+    }
+    public void resetLastStorageType() {
+        lastStorageType = storageType;
     }
 
 

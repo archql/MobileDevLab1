@@ -1,15 +1,14 @@
-package com.archql.notebad;
+package com.archql.notebad.storage;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class SQLiteStorage<T extends SQLitePlaceable> {
@@ -38,19 +37,31 @@ public class SQLiteStorage<T extends SQLitePlaceable> {
     }
 
     public SQLiteStorage<T> open() /*throws SQLException*/ {
-        helper = new SQLiteStorageHelper(context, dbName, tableName, columns);
-        database = helper.getWritableDatabase();
+        try {
+            helper = new SQLiteStorageHelper(context, dbName, tableName, columns);
+            database = helper.getWritableDatabase();
+        } catch(Exception e) {
+            Log.e(this.getClass().getName(), e.getMessage());
+            database = null;
+            helper = null;
+        }
         return this;
     }
 
     public void close() {
-        helper.close();
+        try {
+            helper.close();
+        } catch(Exception e) {
+            Log.e(this.getClass().getName(), e.getMessage());
+        }
     }
 
-    public long insert(T o) {
+    public long insert(@NonNull T o) {
+        if (database == null) { return -1; }
         return database.insert(tableName, null, o.generateContentValue());
     }
     public List<T> fetch() {
+        if (database == null) { return new ArrayList<>(); }
         Cursor cursor = database.query(tableName, columns, null, null, null, null, null);
         if (cursor != null) {
             // unpack cursor
@@ -72,13 +83,27 @@ public class SQLiteStorage<T extends SQLitePlaceable> {
         return null;
     }
 
-    public int update(long _id, T o) {
+    public int update(long _id,@NonNull T o) {
         //if (!o.getClass().equals(aClass))
+        if (database == null) { return -1; }
         return database.update(tableName, o.generateContentValue(), tableId + " = " + _id, null);
     }
 
     public void delete(long _id) {
+        if (database == null) { return; }
         database.delete(tableName, tableId + "=" + _id, null);
+    }
+
+    public boolean deleteAll() {
+        if (database == null) { return false; }
+        try {
+            //database.execSQL("DROP TABLE IF EXISTS " + tableName);
+            database.execSQL("DELETE FROM " + tableName);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 

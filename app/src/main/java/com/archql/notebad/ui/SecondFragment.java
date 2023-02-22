@@ -1,4 +1,4 @@
-package com.archql.notebad;
+package com.archql.notebad.ui;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,6 +14,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.archql.notebad.storage.ICRUDStorage;
+import com.archql.notebad.storage.LocalCRUDStorage;
+import com.archql.notebad.entities.Note;
+import com.archql.notebad.ui.helpers.NoteViewModel;
+import com.archql.notebad.R;
+import com.archql.notebad.storage.SQLiteCRUDStorage;
+import com.archql.notebad.storage.STORAGE_TYPE;
+import com.archql.notebad.entities.StoredNote;
 import com.archql.notebad.databinding.FragmentSecondBinding;
 
 public class SecondFragment extends Fragment {
@@ -82,8 +90,8 @@ public class SecondFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 StoredNote note = binding.getNote(); // TODO null check
-                if (note.storageType != STORAGE_TYPE.NO_STORAGE) {
-                    ICRUDStorage<Note, StoredNote> storage = getStorage(note.storageType);
+                if (note.getStorageType() != STORAGE_TYPE.NO_STORAGE) {
+                    ICRUDStorage<Note, StoredNote> storage = getStorage(note.getStorageType());
                     storage.Delete(note);
                 }
                 goBack();
@@ -138,7 +146,7 @@ public class SecondFragment extends Fragment {
     private void doSave() {
         StoredNote sn = binding.getNote();
         if (sn.isChanged()) {
-            if (sn.getStored().header.equals("")) {
+            if (sn.getStored().getHeader().equals("")) {
                 Toast.makeText(getActivity(), "Note is empty, so nothing is saved!", Toast.LENGTH_LONG).show();
             } else {
                 sn.edited(); // TODO
@@ -156,26 +164,26 @@ public class SecondFragment extends Fragment {
         StoredNote note = binding.getNote();
 
         // Ignore default storage type
-        if (note.storageType == STORAGE_TYPE.NO_STORAGE) {
+        if (note.getStorageType() == STORAGE_TYPE.NO_STORAGE) {
             note.setStorageType(note.getStorageType().next());
             binding.invalidateAll(); // TODO find better
         }
 
         boolean result = false;
-        ICRUDStorage<Note, StoredNote> storage = getStorage(note.storageType);
-        if (note.lastStorageType != note.storageType) {
+        ICRUDStorage<Note, StoredNote> storage = getStorage(note.getStorageType());
+        if (note.getLastStorageType() != note.getStorageType()) {
             // if note in new storage type
             long oldId = note.getId();
             result = storage.Create(note); // ID must be changed here! TODO make it compulsory
             Log.e("TAG", "Create: " + result);
 
-            if (note.lastStorageType != STORAGE_TYPE.NO_STORAGE) {
+            if (note.getLastStorageType() != STORAGE_TYPE.NO_STORAGE) {
                 // delete from old storage if needed
-                ICRUDStorage<Note, StoredNote> lastStorage = getStorage(note.lastStorageType);
+                ICRUDStorage<Note, StoredNote> lastStorage = getStorage(note.getLastStorageType());
                 Log.e("TAG", "Delete: " + lastStorage.Delete(oldId));
             }
             // set type back!
-            note.lastStorageType = note.storageType;
+            note.resetLastStorageType();
         } else {
             // if already existent note
             result = storage.Update(note);

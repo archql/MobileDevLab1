@@ -1,4 +1,4 @@
-package com.archql.notebad;
+package com.archql.notebad.ui.helpers;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 
 import com.archql.notebad.databinding.NoteViewBinding;
+import com.archql.notebad.entities.StoredNote;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewHolder> {

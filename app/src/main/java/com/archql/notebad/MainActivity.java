@@ -12,6 +12,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.archql.notebad.databinding.ActivityMainBinding;
+import com.archql.notebad.storage.LocalCRUDStorage;
+import com.archql.notebad.storage.SQLiteCRUDStorage;
+import com.archql.notebad.ui.helpers.NoteViewModel;
 
 public class MainActivity extends AppCompatActivity {
 

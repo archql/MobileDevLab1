@@ -1,4 +1,4 @@
-package com.archql.notebad;
+package com.archql.notebad.storage;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

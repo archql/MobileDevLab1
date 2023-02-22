@@ -1,6 +1,11 @@
-package com.archql.notebad;
+package com.archql.notebad.storage;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import com.archql.notebad.entities.Note;
+import com.archql.notebad.entities.StoredNote;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +15,7 @@ public class SQLiteCRUDStorage implements ICRUDStorage<Note, StoredNote> {
     protected SQLiteStorage<StoredNote> sqliteStorage;
     protected static final STORAGE_TYPE storageType = STORAGE_TYPE.SQLite;
 
-    SQLiteCRUDStorage(Context context, String storedObjectName) {
+    public SQLiteCRUDStorage(Context context, String storedObjectName) {
         sqliteStorage = new SQLiteStorage<>(context, storedObjectName, StoredNote.TABLE_NAMES, StoredNote::new);
         sqliteStorage.open();
     }
@@ -20,10 +25,15 @@ public class SQLiteCRUDStorage implements ICRUDStorage<Note, StoredNote> {
     }
 
     @Override
-    public boolean Create(StoredNote obj) {
+    public boolean Create(@NonNull StoredNote obj) {
         boolean success = true;
         try {
-            obj.id = sqliteStorage.insert(obj); // update our id
+            long id = sqliteStorage.insert(obj);
+            if (id == -1) {
+                success = false;
+            } else {
+                obj.setId(id); // update our id
+            }
         } catch (Exception e) {
             e.printStackTrace();
             success = false;
@@ -48,19 +58,17 @@ public class SQLiteCRUDStorage implements ICRUDStorage<Note, StoredNote> {
     }
 
     @Override
-    public boolean Update(StoredNote newObj) {
-        boolean success = true;
+    public boolean Update(@NonNull StoredNote newObj) {
         try {
-            sqliteStorage.update(newObj.getId(), newObj);
+            return sqliteStorage.update(newObj.getId(), newObj) > 0;
         } catch (Exception e) {
             e.printStackTrace();
-            success = false;
         }
-        return success;
+        return false;
     }
 
     @Override
-    public boolean Delete(StoredNote obj) {
+    public boolean Delete(@NonNull StoredNote obj) {
         boolean success = true;
         try {
             sqliteStorage.delete(obj.getId());

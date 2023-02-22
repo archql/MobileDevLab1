@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.archql.notebad.FirstFragment"
+        android:name="com.archql.notebad.ui.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.archql.notebad.SecondFragment"
+        android:name="com.archql.notebad.ui.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 

@@ -1,4 +1,4 @@
-package com.archql.notebad;
+package com.archql.notebad.storage;
 
 public enum STORAGE_TYPE {
     NO_STORAGE,

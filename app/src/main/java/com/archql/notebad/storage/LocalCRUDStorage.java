@@ -1,6 +1,11 @@
-package com.archql.notebad;
+package com.archql.notebad.storage;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import com.archql.notebad.entities.Note;
+import com.archql.notebad.entities.StoredNote;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -26,15 +31,15 @@ public class LocalCRUDStorage implements ICRUDStorage<Note, StoredNote> {
         return id;
     }
 
-    LocalCRUDStorage(Context ctx) {
+    public LocalCRUDStorage(Context ctx) {
         storage = new LocalStorage<>(ctx, extension);
     }
 
     @Override
-    public boolean Create(StoredNote obj) {
+    public boolean Create(@NonNull StoredNote obj) {
         // assign new id to object
         lastId++;
-        obj.id = lastId;
+        obj.setId(lastId);
         return storage.writeToFile(convertIdToFilename(lastId), obj.getStored());
     }
 
@@ -59,12 +64,16 @@ public class LocalCRUDStorage implements ICRUDStorage<Note, StoredNote> {
     }
 
     @Override
-    public boolean Update(StoredNote newObj) {
-        return storage.writeToFile(convertIdToFilename(newObj.getId()), newObj.getStored());
+    public boolean Update(@NonNull StoredNote newObj) {
+        String filename = convertIdToFilename(newObj.getId());
+        if (!storage.checkIfFileExists(filename)) {
+            return false;
+        }
+        return storage.writeToFile(filename, newObj.getStored());
     }
 
     @Override
-    public boolean Delete(StoredNote obj) {
+    public boolean Delete(@NonNull StoredNote obj) {
         return storage.deleteFile(convertIdToFilename(obj.getId()));
     }
 
